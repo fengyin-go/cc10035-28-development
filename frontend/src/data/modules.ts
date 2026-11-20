@@ -200,6 +200,28 @@ export const MODULES: ModuleMeta[] = [
     actionTargets: {"启用视图": "草稿", "停用视图": "已启用"},
     metrics: ["视图总数", "已启用数", "停用数"],
   },
+  {
+    key: "probe_delegation",
+    name: "运行委托",
+    entity: "运行委托",
+    desc: "维护者授予协作者按字段运行探针的临时许可，运行权不包含修改模板",
+    fields: ["委托编号", "模板ID", "维护者", "协作者", "授权字段", "有效版本", "到期时间"],
+    statuses: ["生效中", "已撤销", "已关闭"],
+    actions: ["撤销委托", "关闭授权"],
+    actionTargets: {"撤销委托": "生效中", "关闭授权": "已撤销"},
+    metrics: ["委托总数", "撤销数", "关闭数"],
+  },
+  {
+    key: "delegation_audit",
+    name: "委托审计",
+    entity: "审计记录",
+    desc: "回写探针派发的实际字段与派发结果，记录派发与撤权的实际先后及结果可用时间",
+    fields: ["委托编号", "操作者", "实际字段", "模板版本", "派发时间", "撤权时间", "回执时间", "时序结论", "派发结果", "结果可用性"],
+    statuses: ["已派发", "已回执", "已冻结", "已关闭"],
+    actions: ["确认回执", "作废回执"],
+    actionTargets: {"确认回执": "已冻结", "作废回执": "已冻结"},
+    metrics: ["记录总数", "已回执数", "冻结数"],
+  },
 ]
 
 export const MODULE_BY_KEY: Map<string, ModuleMeta> = new Map(

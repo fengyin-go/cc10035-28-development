@@ -20,6 +20,8 @@ from app.services.knowledge_link import KnowledgeLinkService
 from app.services.output_target import OutputTargetService
 from app.services.extract_studio import ExtractStudioService
 from app.services.aggregate_view import AggregateViewService
+from app.services.probe_delegation import ProbeDelegationService
+from app.services.delegation_audit import DelegationAuditService
 
 SERVICES: dict[str, BaseModuleService] = {
     "dom_parser": DomParserService(),
@@ -40,6 +42,8 @@ SERVICES: dict[str, BaseModuleService] = {
     "output_target": OutputTargetService(),
     "extract_studio": ExtractStudioService(),
     "aggregate_view": AggregateViewService(),
+    "probe_delegation": ProbeDelegationService(),
+    "delegation_audit": DelegationAuditService(),
 }
 
 

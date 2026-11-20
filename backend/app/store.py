@@ -4,6 +4,7 @@
 """
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any
 
 from app.seed import SEED_ROWS
@@ -14,6 +15,14 @@ class Store:
         self._tables: dict[str, list[dict[str, Any]]] = {
             name: [dict(row) for row in rows] for name, rows in SEED_ROWS.items()
         }
+        # 逻辑时钟：为派发、撤权、回执等跨模块事件提供严格递增的先后序号，
+        # 撤销与在途回执冲突时以序号判定实际顺序，而不是依赖墙钟精度。
+        self._seq = 0
+
+    def next_event(self) -> tuple[int, str]:
+        """返回 (事件序号, ISO时间戳)，序号单调递增，用于还原事件实际先后。"""
+        self._seq += 1
+        return self._seq, datetime.now(timezone.utc).isoformat(timespec="microseconds")
 
     def module_names(self) -> list[str]:
         return sorted(self._tables)

@@ -11,7 +11,7 @@
 .
 ├── frontend/                 Vue 3 + Vite + TypeScript 前端
 │   ├── src/views/WorkbenchView.vue|tsx  全部模块共享工作台
-│   ├── src/data/modules.ts              18个业务模块配置
+│   ├── src/data/modules.ts              20个业务模块配置
 │   ├── src/api/              统一请求封装
 │   └── vite.config.ts        dev server 配置（open: false）
 ├── backend/                  FastAPI（Python） 后端
@@ -68,6 +68,22 @@ npm run dev
 | 输出目标 | `output_target` | 输出配置 | 配置名称、输出类型、目标地址 |
 | 抽取工坊 | `extract_studio` | 交互任务 | 任务名称、示例页面、标注区域 |
 | 聚合视图 | `aggregate_view` | 视图配置 | 视图名称、统计维度、聚合字段 |
+| 运行委托 | `probe_delegation` | 运行委托 | 委托编号、维护者、协作者、授权字段、有效版本 |
+| 委托审计 | `delegation_audit` | 审计记录 | 实际字段、派发/撤权/回执时间、时序结论、结果可用性 |
+
+## 运行委托与委托审计
+
+模板规则支持临时运行许可：维护者在已发布模板上按字段授予协作者运行探针的权限
+（`POST /api/template_rule/{id}/grant`），委托在授予时钉住授权字段与模板有效版本。
+
+- 协作者只读受控探针配置数据集，运行权不包含修改模板；越权编辑被
+  `POST /api/template_rule/{id}/edit` 拒绝，维护者编辑会使模板版本递增。
+- 探针选择消费许可、字段与有效版本生成快照请求
+  （`POST /api/probe_selector/{id}/observe`），实际使用字段与派发结果回写委托审计清单。
+- 回执完成前撤销委托时，审计按派发/撤权/回执序号记录实际先后：回执先于撤权则结果
+  即时可用；派发先于撤权而回执晚到则结果冻结，由维护者确认可用或作废，冻结期间不发布快照。
+- 停权后不得发起新观测；并发更新模板与委托时只允许先前授予的字段。
+- 模板维护入口（标记失效）联动关闭已经撤销的授权及其冻结回执。
 
 ## 约定
 
